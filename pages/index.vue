@@ -1,6 +1,6 @@
 <template>
   <main>
-    <ButtonGroup />
+    <ButtonGroup v-on:selectedFilterEmit="setSelectedURLFilter" />
     <section class="videoCardGroup">
       <video-card v-for="video in videos" :key="video.etag">
         <img
@@ -44,16 +44,24 @@ export default {
   data() {
     return {
       videos: [],
+      urlFilter: "vue.js",
     };
   },
   methods: {
     async fetchFirstTwenty() {
-      let ytURL =
-        "https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&q=vue.js&key=AIzaSyBFy3TI3-fnyWwap-RViSfUXPFdbRXIgFs";
+      let youtubeURL = `https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&q=${this.urlFilter}&key=AIzaSyBFy3TI3-fnyWwap-RViSfUXPFdbRXIgFs`;
+      let ytURL = youtubeURL;
       let resp = await this.$axios.get(ytURL);
       this.videos = resp.data.items;
       console.log("Fetching Videos...");
-      console.log(this.videos);
+      // console.log(this.vueAsDefaultFilter);
+    },
+    setSelectedURLFilter(data) {
+      // #TODO make a randomizer function to select different search terms to improve the first 20 results
+      // console.log(`This is the data: ${data}`);
+      this.urlFilter = data;
+      this.youtubeURL = `https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&q=${this.urlFilter}&key=AIzaSyBFy3TI3-fnyWwap-RViSfUXPFdbRXIgFs`;
+      this.fetchFirstTwenty();
     },
   },
   mounted() {

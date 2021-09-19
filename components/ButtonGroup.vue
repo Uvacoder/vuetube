@@ -2,14 +2,45 @@
   <section>
     <form>
       <label for="vue">
-        <input type="radio" name="vueOrNuxt" id="vue" checked value="Vue" />VUE
+        <input
+          type="radio"
+          id="vue"
+          value="Vue"
+          v-model="selectedFilter"
+          @change="onChange($event)"
+        />VUE
       </label>
       <label for="nuxt">
-        <input type="radio" name="vueOrNuxt" id="nuxt" value="Nuxt" />NUXT
+        <input
+          type="radio"
+          id="nuxt"
+          value="Nuxt"
+          v-model="selectedFilter"
+          @change="onChange($event)"
+        />NUXT
       </label>
     </form>
   </section>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      selectedFilter: "Vue",
+    };
+  },
+  methods: {
+    onChange(event) {
+      let data = event.target.value;
+      this.$emit("selectedFilterEmit", data);
+    },
+  },
+  mounted() {
+    console.log("Button Group Mounted");
+  },
+};
+</script>
 
 <style scoped>
 form {

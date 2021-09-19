@@ -19,7 +19,11 @@
 </template>
 
 <script>
-export default {};
+export default {
+  mounted() {
+    console.log("Video Card Mounted");
+  },
+};
 </script>
 
 <style scoped>
