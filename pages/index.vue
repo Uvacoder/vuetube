@@ -1,7 +1,7 @@
 <template>
   <main>
-    <ButtonGroup v-on:selectedFilterEmit="setSelectedURLFilter" />
-    <section class="videoCardGroup">
+    <ButtonGroup v-on:selected-filter-emit="setSelectedURLFilter" />
+    <section class="videoCardGroup" v-if="videos.length > 0">
       <video-card v-for="video in videos" :key="video.etag">
         <img
           :src="video.snippet.thumbnails.high.url"
@@ -34,6 +34,9 @@
         >
       </video-card>
     </section>
+    <section v-else class="loadingClass">
+      <h1 class="loadingMsg">Fetching Videos</h1>
+    </section>
   </main>
 </template>
 
@@ -45,11 +48,47 @@ export default {
     return {
       videos: [],
       urlFilter: "vue.js",
+      filterKeywords: {
+        Vue: [
+          "vue",
+          "vue directives",
+          "beginner vue js tutorial",
+          "intermediate vue tutorial",
+          "why vue is bad for web development",
+          "vue mongodb example",
+          "vue firebase",
+          "vue sqlite3",
+          "vue errors",
+          "vue 3 tips and tricks",
+          "vue 3 beginners",
+          "vue 3 vs vue 2",
+          "write better vue js code",
+          "vue static site",
+          "optimizing vue for development",
+        ],
+        Nuxt: [
+          "what is nuxt js",
+          "optimizing nuxt js",
+          "nuxt for beginners",
+          "nuxt static site",
+          "downsides of using nuxt",
+          "pros of using nuxt",
+          "features of nuxt js",
+          "nuxt js folder structure",
+          "nuxt js errors",
+          "nuxt js firebase",
+          "nuxt SEO",
+          "nuxt js authentication",
+          "nuxt js middleware",
+          "nuxt js SSR",
+          "nuxt js config",
+        ],
+      },
     };
   },
   methods: {
     async fetchFirstTwenty() {
-      let youtubeURL = `https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&q=${this.urlFilter}&key=AIzaSyBFy3TI3-fnyWwap-RViSfUXPFdbRXIgFs`;
+      let youtubeURL = `https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&q=${this.urlFilter}&key=AIzaSyBzRgIibcEp2J5umezi40NFz23BmlZZvI0`;
       let ytURL = youtubeURL;
       let resp = await this.$axios.get(ytURL);
       this.videos = resp.data.items;
@@ -57,11 +96,26 @@ export default {
       // console.log(this.vueAsDefaultFilter);
     },
     setSelectedURLFilter(data) {
+      let randInt = Math.floor(Math.random() * this.filterKeywords.Vue.length);
       // #TODO make a randomizer function to select different search terms to improve the first 20 results
-      // console.log(`This is the data: ${data}`);
-      this.urlFilter = data;
-      this.youtubeURL = `https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&q=${this.urlFilter}&key=AIzaSyBFy3TI3-fnyWwap-RViSfUXPFdbRXIgFs`;
-      this.fetchFirstTwenty();
+      // #SELECT THE INCOMING DATA AND REDIRECT THE OUTPUT TO A RANDOM VALUE IN ITS DATA OBJECT
+      if (data === "Vue") {
+        let newData = this.filterKeywords.Vue[randInt];
+        console.log(newData);
+        console.log("inside Vue");
+        // console.log(newData);
+        this.urlFilter = newData;
+        this.youtubeURL = `https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&q=${this.urlFilter}&key=AIzaSyBzRgIibcEp2J5umezi40NFz23BmlZZvI0`;
+        this.fetchFirstTwenty();
+      } else {
+        console.log(newData);
+        console.log("inside Nuxt");
+        let newData = this.filterKeywords.Nuxt[randInt];
+        // console.log(newData);
+        this.urlFilter = newData;
+        this.youtubeURL = `https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&q=${this.urlFilter}&key=AIzaSyBFy3TI3-fnyWwap-RViSfUXPFdbRXIgFs`;
+        this.fetchFirstTwenty();
+      }
     },
   },
   mounted() {
@@ -72,7 +126,7 @@ export default {
 
 <style>
 main {
-  @apply min-h-screen bg-two text-three text-center px-2;
+  @apply min-h-screen bg-one text-three text-center px-2;
 }
 img {
   @apply w-full h-3/4 object-cover;
@@ -91,5 +145,11 @@ img {
 }
 .watcher {
   @apply mb-4 bg-two text-ten uppercase font-bold px-4 py-2 rounded-xl tracking-widest  w-auto text-lg inline-flex items-center gap-x-3;
+}
+.loadingClass {
+  @apply min-h-screen flex flex-col justify-center items-center text-white;
+}
+.loadingMsg {
+  @apply font-semibold text-4xl tracking-widest animate-pulse animate-bounce duration-700 uppercase;
 }
 </style>

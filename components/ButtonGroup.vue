@@ -33,7 +33,7 @@ export default {
   methods: {
     onChange(event) {
       let data = event.target.value;
-      this.$emit("selectedFilterEmit", data);
+      this.$emit("selected-filter-emit", data);
     },
   },
   mounted() {
